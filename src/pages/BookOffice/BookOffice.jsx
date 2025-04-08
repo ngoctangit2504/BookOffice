@@ -1,4 +1,3 @@
-// BookOffice.js
 import React from "react";
 import { MagnifyingGlassIcon, MapPinIcon } from "@heroicons/react/24/solid";
 import useWindowSize from "../../hooks/UseWindowSize";

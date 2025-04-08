@@ -8,3 +8,10 @@
 /* * {
     outline: 1px solid red;
   } */
+
+  .scroll-hidden::-webkit-scrollbar {
+    display: none;
+  }
+  .scroll-hidden {
+    scrollbar-width: none;
+  }
