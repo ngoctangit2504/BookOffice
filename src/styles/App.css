@@ -1,0 +1,17 @@
+/** Desktop layout **/
+.isMobile {
+    display: none;
+}
+.isDesktop {
+    display: block;
+}
+
+/** Mobile layout **/
+@media screen and (max-width: 1024px) {
+    .isMobile {
+        display: block;
+    }
+    .isDesktop {
+        display: none;
+    }
+}
