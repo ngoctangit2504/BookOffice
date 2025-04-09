@@ -1,22 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 
-
 function OfficeDetail() {
   const [selectedDate, setSelectedDate] = useState(1);
   const [selectedTime, setSelectedTime] = useState(3);
-
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Get office data from location.state, with defaults
   const { officeImage, officeName, officeAddress, officeDescription } =
-    location.state || {};
+    location.state || {
+      officeImage: "",
+      officeName: "",
+      officeAddress: "",
+      officeDescription: "",
+    };
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  // Tạo mảng dữ liệu mẫu cho Date và Time
+  // Sample data for dates and times
   const dateList = [
     { id: 1, day: "Thu", date: "23" },
     { id: 2, day: "Fri", date: "24" },
@@ -28,7 +33,7 @@ function OfficeDetail() {
 
   const timeList = [1, 2, 3, 5, 8, 13, 15];
 
-  // refs cho scroll
+  // Refs for scrolling
   const dateRefs = useRef({});
   const timeRefs = useRef({});
 
@@ -54,15 +59,17 @@ function OfficeDetail() {
 
   const handleNext = () => {
     const selectedDateObj = dateList.find((item) => item.id === selectedDate);
-    const selectedTimeValue = selectedTime;
-  
+
     navigate(`/office/${id}/confirm`, {
       state: {
         officeId: id,
         officeName,
+        officeImage,
+        officeAddress,
+        officeDescription,
         selectedDay: selectedDateObj?.day,
         selectedDate: selectedDateObj?.date,
-        selectedTime: selectedTimeValue,
+        selectedTime: selectedTime,
       },
     });
   };
@@ -101,7 +108,7 @@ function OfficeDetail() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-blue-900 to-red-600 py-8">
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-600 via-blue-800 to-red-800 py-8">
       <div
         className="relative w-full h-[40rem] bg-cover bg-center mb-4 flex items-center justify-center text-white text-center"
         style={{ backgroundImage: `url(${officeImage})` }}
@@ -133,47 +140,47 @@ function OfficeDetail() {
           <p className="text-gray-200 mb-2 pb-6">{officeAddress}</p>
           <p className="text-gray-100">{officeDescription}</p>
         </div>
+      </div>
 
-        {/* Scrollable Date + Time */}
-        <div className="fixed bottom-2 left-0 right-0 z-20">
-          <div className="w-full bg-transparent rounded-3xl p-4 backdrop-blur-sm ">
-            {/* Date Scroll */}
-            <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
-              {dateList.map((item) => (
-                <DateCard
-                  key={item.id}
-                  id={item.id}
-                  day={item.day}
-                  date={item.date}
-                  selected={selectedDate === item.id}
-                  onClick={() => setSelectedDate(item.id)}
-                />
-              ))}
-            </div>
-
-            {/* Time Scroll */}
-            <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
-              {timeList.map((time) => (
-                <TimeOption
-                  key={time}
-                  value={time}
-                  selected={selectedTime === time}
-                  onClick={() => setSelectedTime(time)}
-                />
-              ))}
-            </div>
-
-            <div className="text-center text-gray-200 text-lg mb-6">
-              90 Minutes
-            </div>
-
-            <button
-              className="w-full bg-transparent text-white text-2xl py-3 rounded-3xl border border-white/40 shadow-lg backdrop-blur-sm hover:bg-white/10 transition duration-300"
-              onClick={handleNext}
-            >
-              Next
-            </button>
+      {/* Scrollable Date + Time */}
+      <div className="fixed bottom-2 left-0 right-0 z-20">
+        <div className="w-full bg-transparent rounded-3xl p-4 backdrop-blur-sm ">
+          {/* Date Scroll */}
+          <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
+            {dateList.map((item) => (
+              <DateCard
+                key={item.id}
+                id={item.id}
+                day={item.day}
+                date={item.date}
+                selected={selectedDate === item.id}
+                onClick={() => setSelectedDate(item.id)}
+              />
+            ))}
           </div>
+
+          {/* Time Scroll */}
+          <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
+            {timeList.map((time) => (
+              <TimeOption
+                key={time}
+                value={time}
+                selected={selectedTime === time}
+                onClick={() => setSelectedTime(time)}
+              />
+            ))}
+          </div>
+
+          <div className="text-center text-gray-200 text-lg mb-6">
+            90 Minutes
+          </div>
+
+          <button
+            className="w-full bg-transparent text-white text-2xl py-3 rounded-3xl border border-white/40 shadow-lg backdrop-blur-sm hover:bg-white/10 transition duration-300 "
+            onClick={handleNext}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

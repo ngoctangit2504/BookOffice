@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import routes from "../src/routers/index";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import AppCss from "./styles/App.css";
-
 function App() {
   return (
+    
     <div className="App">
+    
       <Router>
         <nav>
           <ul>
@@ -22,6 +22,7 @@ function App() {
         </Routes>
       </Router>
     </div>
+    
   );
 }
 
