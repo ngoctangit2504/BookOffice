@@ -8,7 +8,7 @@ const BookedRoomsManager = ({ onBack }) => {
       id: 1,
       name: "Stanford Office",
       location: "123 Electric Avenue Eco City, EC 54321",
-      image: "/api/placeholder/400/200",
+      image: "https://ora.stanford.edu/sites/g/files/sbiybj21621/files/styles/breakpoint_2xl_2x/public/media/image/img_7242_1500x1000_0.jpeg?itok=Z1qumBQs",
       status: "active", // active, pending, cancelled
       bookingTime: "Today, 14:00 - 16:00",
       date: "20 Apr 2025"
@@ -17,7 +17,7 @@ const BookedRoomsManager = ({ onBack }) => {
       id: 2,
       name: "Singapor Office",
       location: "22 Nassim Road Orchard, EC 255",
-      image: "/api/placeholder/400/200",
+      image: "https://assets.aboutamazon.com/dims4/default/b8ce663/2147483647/strip/false/crop/2560x1709+0+0/resize/1486x992!/quality/90/?url=https%3A%2F%2Famazon-blogs-brightspot.s3.amazonaws.com%2Fb6%2Fef%2Fb4c3011543caabee29fd48f0ca0e%2Fa-1.jpg",
       status: "pending",
       bookingTime: "Tomorrow, 09:00 - 11:00",
       date: "21 Apr 2025"
@@ -26,7 +26,7 @@ const BookedRoomsManager = ({ onBack }) => {
       id: 3,
       name: "Osaka Meeting Room",
       location: "Osaka, Japan",
-      image: "/api/placeholder/400/200",
+      image: "https://digital.ihg.com/is/image/ihg/voco-osaka-shi-8794291492-16x9",
       status: "cancelled",
       bookingTime: "Yesterday, 13:00 - 15:00", 
       date: "19 Apr 2025"
@@ -58,7 +58,7 @@ const BookedRoomsManager = ({ onBack }) => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-600/50 to-red-600 min-h-screen w-full">
+    <div className="bg-gray-600/50 backdrop-blur-md min-h-screen w-full">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-8">
         <div className="flex items-center">
@@ -67,34 +67,34 @@ const BookedRoomsManager = ({ onBack }) => {
           </button>
           <h1 className="text-3xl font-semibold text-white flex items-center">
             <Building className="w-6 h-6 mr-2" />
-            Quản lý phòng
+            Room Management
           </h1>
         </div>
       </div>
 
       {/* Filters */}
       <div className="px-4 mb-6">
-        <div className="flex space-x-2 overflow-x-auto rounded-full bg-blue-600/30 p-1">
+        <div className="flex space-x-2 overflow-x-auto rounded-full bg-gray-300/60 p-1">
           <button 
-            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'all' ? 'bg-white text-blue-600 font-medium' : 'text-white'}`}
+            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'all' ? 'bg-gray-400 text-white font-medium' : 'text-white'}`}
             onClick={() => setFilterStatus('all')}
           >
             All
           </button>
           <button 
-            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'active' ? 'bg-white text-blue-600 font-medium' : 'text-white'}`}
+            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'active' ? 'bg-gray-400 text-white font-medium' : 'text-white'}`}
             onClick={() => setFilterStatus('active')}
           >
             Active
           </button>
           <button 
-            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'pending' ? 'bg-white text-blue-600 font-medium' : 'text-white'}`}
+            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'pending' ? 'bg-gray-400 text-white font-medium' : 'text-white'}`}
             onClick={() => setFilterStatus('pending')}
           >
             Pending
           </button>
           <button 
-            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'cancelled' ? 'bg-white text-blue-600 font-medium' : 'text-white'}`}
+            className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'cancelled' ? 'bg-gray-400 text-white font-medium' : 'text-white'}`}
             onClick={() => setFilterStatus('cancelled')}
           >
             Cancelled

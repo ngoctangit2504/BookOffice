@@ -12,6 +12,7 @@ function BookOffice() {
   const [error, setError] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showBookedRooms, setShowBookedRooms] = useState(false); // Add this state
+  const [activeFilter, setActiveFilter] = useState("Office");
 
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
@@ -41,33 +42,34 @@ function BookOffice() {
     setMenuOpen(false);
   };
 
-  // Add this handler for opening the booked rooms screen
   const handleOpenBookedRooms = () => {
     setShowBookedRooms(true);
-    setMenuOpen(false); // Close the menu when navigating
+    setMenuOpen(false); 
   };
 
-  // Add this handler for going back to the main screen
   const handleBackToMain = () => {
     setShowBookedRooms(false);
+  };
+
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
   };
 
   const windowSize = useWindowSize();
   const isMobile = windowSize.width < 1024;
   const { isOpen, openSidebar, closeSidebar } = useSidebar();
 
-  // Show BookedRoomsManager if showBookedRooms is true
   if (showBookedRooms) {
     return <BookedRoomsManager onBack={handleBackToMain} />;
   }
 
   return (
-    <div className="bg-[url('https://media.aedas.com/project/Aedas%20SGO%20(1%20Thumbnail).jpg?s5D5nDTW_9DsfyQi70DA4Sxjffxr7zSp')] bg-cover bg-center h-screen w-full overflow-x-hidden">
+    <div className="bg-gray-600/30 backdrop-blur-md bg-cover bg-center h-screen w-full overflow-x-hidden">
       {isMobile ? (
         // Layout cho mobile
         <div className="bg-gray-300/50 min-h-screen w-full overflow-x-hidden relative">
           <div className="flex items-center justify-between px-6 py-10">
-            <h1 className="text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white to-blue-500">Book</h1>
+            <h1 className="text-5xl text-transparent text-white text-shadow">Book</h1>
             <div className="flex items-center justify-center text-white">
               <button onClick={toggleMenu}>
                 <Menu className="w-8 h-8"/>
@@ -75,11 +77,10 @@ function BookOffice() {
             </div>
           </div>
 
-          {/* Menu Sidebar */}
           {menuOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={closeMenu}>
               <div 
-                className="absolute right-0 top-0 h-full w-72 bg-gray-600/70 shadow-lg z-50"
+                className="absolute right-0 top-0 h-full w-72 bg-gray-600/70 backdrop-blur-md shadow-lg z-50"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-6 flex flex-col">
@@ -90,29 +91,28 @@ function BookOffice() {
                       </svg>
                     </button>
                   </div>
-                  <div className="mt-8 flex flex-col space-y-6">
-                    {/* Update this button to call the handler */}
+                  <div className="mt-8 flex flex-col space-y-8">
                     <button 
                       className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300"
                       onClick={handleOpenBookedRooms}
                     >
-                      <Building className="w-5 h-5 mr-2" />
-                      Quản lý phòng
+                      <Building className="w-6 h-6 mr-2" />
+                      Room Management
                     </button>
 
                     <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
-                      <BanknoteArrowDown className="w-5 h-5 mr-2" />
-                      Hoàn tiền
+                      <BanknoteArrowDown className="w-6 h-6 mr-2" />
+                      Refund
                     </button>
 
                     <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
-                      <FolderClock className="w-5 h-5 mr-2" />
-                      Phòng đã đặt
+                      <FolderClock className="w-6 h-6 mr-2" />
+                      Room booked
                     </button>
 
                     <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
-                      <Flag className="w-5 h-5 mr-2" />
-                      Báo cáo
+                      <Flag className="w-6 h-6 mr-2" />
+                      Report
                     </button>
                   </div>
                 </div>
@@ -142,44 +142,141 @@ function BookOffice() {
           </div>
 
           <div>
-            <p className="text-2xl py-4 px-6 bg-gradient-to-b from-white to-blue-500 text-transparent bg-clip-text">
+            <p className="text-2xl py-4 px-6 text-white text-shadow">
               The most recommentded
             </p>
           </div>
 
-          {/* Fixed horizontal scrolling issue in buttons container */}
           <div className="px-3">
-            <div className="flex justify-between items-center w-full overflow-x-auto rounded-full shadow-lg bg-gray-300/50 px-2">
+            <div className="flex justify-between items-center w-full overflow-x-auto rounded-full shadow-lg bg-gray-300/50 backdrop-blur-md px-2">
               <button 
-                className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold"
+                className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold text-shadow"
                 onClick={openSidebar}
               >
                 Office
               </button>
-              <button className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold">
+              <button className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold text-shadow">
                 Conference
               </button>
-              <button className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold">
+              <button className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold text-shadow">
                 Food
               </button>
-              <button className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold">
+              <button className="rounded-full whitespace-nowrap text-white py-1.5 px-4 my-3 mx-1 hover:bg-gray-200/50 hover:text-white hover:font-semibold text-shadow">
                 Bad
               </button>
             </div>
           </div>
 
-          {/* Sliding sidebar component */}
-          <SlidingSidebar 
-            isOpen={isOpen} 
-            onClose={closeSidebar}
-            height="85%"
-          />
+          {isOpen && (
+               <SlidingSidebar 
+               isOpen={isOpen} 
+               onClose={closeSidebar}
+               height="85%" 
+              >
+           </SlidingSidebar>
+          )}
         </div>
       ) : (
         // Layout cho desktop
-        <div className="w-full overflow-x-hidden">
-          <h1>Desktop Layout</h1>
-          <p>Nội dung desktop...</p>
+        <div className="flex min-h-screen w-full">
+          {/* Sidebar */}
+          <div className="w-64 bg-gray-700/70 backdrop-blur-md shadow-lg h-screen fixed left-0 top-0">
+            <div className="p-6">
+              <h1 className="text-4xl font-bold text-white mb-10">Book</h1>
+              
+              <div className="mt-8 flex flex-col space-y-8">
+                <button 
+                  className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300"
+                  onClick={handleOpenBookedRooms}
+                >
+                  <Building className="w-6 h-6 mr-2" />
+                  Room Management
+                </button>
+
+                <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
+                  <BanknoteArrowDown className="w-6 h-6 mr-2" />
+                  Refund
+                </button>
+
+                <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
+                  <FolderClock className="w-6 h-6 mr-2" />
+                  Room booked
+                </button>
+
+                <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
+                  <Flag className="w-6 h-6 mr-2" />
+                  Report
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="ml-64 w-full">
+            {/* Top search bar */}
+            <div className="p-6">
+              <div className="flex items-center w-full max-w-xl rounded-3xl shadow-lg bg-gray-300/50 px-2 my-6">
+                <MagnifyingGlassIcon className="p-1 w-12 h-12 text-white"/>
+                <input
+                  placeholder="Where ?"
+                  className="w-full px-4 bg-transparent outline-none placeholder:text-white"
+                />
+                <button 
+                  className="bg-gray-400/50 rounded-full"
+                  onClick={handleGetLocation}     
+                >
+                  <MapPinIcon className="w-8 h-8 p-1 text-white"/>
+                </button>
+              </div>
+            </div>
+
+            {/* Category filter */}
+            <div className="px-6">
+              <div className="inline-flex items-center rounded-full shadow-lg bg-gray-300/50 backdrop-blur-md px-2">
+                {["Office", "Conference", "Food", "Bad"].map((filter) => (
+                  <button 
+                    key={filter}
+                    className={`rounded-full whitespace-nowrap py-2 px-6 my-2 mx-1 transition duration-300 text-shadow ${
+                      activeFilter === filter 
+                        ? "bg-gray-200/50 text-white font-semibold" 
+                        : "text-white hover:bg-gray-200/50 hover:text-white hover:font-semibold"
+                    }`}
+                    onClick={() => handleFilterChange(filter)}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Recommended section */}
+            <div className="px-6 mt-8">
+              <p className="text-2xl py-4 text-white text-shadow">
+                The most recommended
+              </p>
+            </div>
+
+            {/* Office items grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+              <OfficeItem />
+              <OfficeItem />
+              <OfficeItem />
+              <OfficeItem />
+              <OfficeItem />
+              <OfficeItem />
+            </div>
+
+            {/* Featured section */}
+            <div className="px-6 mt-12">
+              <p className="text-2xl py-4 text-white text-shadow">
+                Featured Spaces
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <OfficeItem />
+                <OfficeItem />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

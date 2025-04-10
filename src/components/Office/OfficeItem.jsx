@@ -25,7 +25,7 @@ function OfficeItem() {
   return (
     <div className='mb-2 w-full'>
       <div
-        className='grid grid-cols-4 h-24 border rounded-3xl bg-gradient-to-b from-blue-300 to-gray-600 w-full cursor-pointer'
+        className='grid grid-cols-4 h-24 border rounded-3xl bg-gray-600/30 backdrop-blur-md w-full cursor-pointer'
         onClick={handleClick}
       >
         <div className='col-span-1 flex items-center justify-center'>

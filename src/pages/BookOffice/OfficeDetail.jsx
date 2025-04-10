@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
+import useWindowSize from "../../hooks/UseWindowSize";
+import { ArrowBigRightDash } from "lucide-react";
+
 
 function OfficeDetail() {
+  const windowSize = useWindowSize();
+  const isMobile = windowSize.width < 1024;
+
   const [selectedDate, setSelectedDate] = useState(1);
   const [selectedTime, setSelectedTime] = useState(3);
   const { id } = useParams();
@@ -31,7 +37,7 @@ function OfficeDetail() {
     { id: 6, day: "Tue", date: "28" },
   ];
 
-  const timeList = [1, 2, 3, 5, 8, 13, 15];
+  const timeList = ["7 AM", "9 AM", "11 AM", "1 PM", "3 PM", "5 PM", "7 PM"];
 
   // Refs for scrolling
   const dateRefs = useRef({});
@@ -107,82 +113,115 @@ function OfficeDetail() {
     );
   };
 
+  const handleViewOfficeDetail = () => {
+    navigate(`/office/${id}/detail`, {
+      state: {
+        officeId: id,
+        officeName,
+        officeImage,
+        officeAddress,
+        officeDescription,
+        // Thêm thông tin về ngày và giờ đã chọn
+        selectedDateObj: dateList.find((item) => item.id === selectedDate),
+        selectedTime: selectedTime,
+      }
+    });
+  };
+
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-blue-600 via-blue-800 to-red-800 py-8">
-      <div
-        className="relative w-full h-[40rem] bg-cover bg-center mb-4 flex items-center justify-center text-white text-center"
-        style={{ backgroundImage: `url(${officeImage})` }}
-      >
-        <div className="absolute inset-0 bg-gray-300/15"></div>
-
-        <button
-          onClick={handleBack}
-          className="absolute top-4 left-4 text-blue-200 p-2 rounded-full font-bold flex items-center z-10"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
+    <div>
+      {isMobile ? (
+        <div className="w-full min-h-screen bg-gray-600 py-8">
+          <div
+            className="relative w-full h-[40rem] bg-cover bg-center mb-4 flex items-center justify-center text-white text-center"
+            style={{ backgroundImage: `url(${officeImage})` }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
-          </svg>
-        </button>
+            <div className="absolute inset-0 bg-gray-300/15"></div>
 
-        <div className="relative z-10 p-6 rounded-xl max-w-xl">
-          <h2 className="text-3xl font-bold mb-2">{officeName}</h2>
-          <p className="text-gray-200 mb-2 pb-6">{officeAddress}</p>
-          <p className="text-gray-100">{officeDescription}</p>
+            <button
+              onClick={handleBack}
+              className="absolute top-4 left-4 text-white p-2 rounded-full font-bold flex items-center z-10"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                />
+              </svg>
+            </button>
+
+            <div className="relative z-10 p-6 rounded-xl max-w-xl">
+              <h2 className="text-3xl font-bold mb-2">{officeName}</h2>
+              <p className="text-white mb-2 pb-6">{officeAddress}</p>
+              <p className="text-white">{officeDescription}</p>
+
+              
+              <button 
+              onClick={handleViewOfficeDetail}
+              className="mt-8 flex flex-row items-center mx-auto border-full rounded-full p-2 shadow-[0_4px_10px_rgba(255,255,255,0.5)] hover:bg-gray-600/50">
+              <ArrowBigRightDash className="mr-2"/>
+                View Office
+              </button>
+              
+
+            </div>
+          </div>
+
+          {/* Scrollable Date + Time */}
+          <div className="fixed bottom-2 left-0 right-0 z-20">
+            <div className="w-full bg-transparent rounded-3xl p-4 backdrop-blur-sm ">
+              {/* Date Scroll */}
+              <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
+                {dateList.map((item) => (
+                  <DateCard
+                    key={item.id}
+                    id={item.id}
+                    day={item.day}
+                    date={item.date}
+                    selected={selectedDate === item.id}
+                    onClick={() => setSelectedDate(item.id)}
+                  />
+                ))}
+              </div>
+
+              {/* Time Scroll */}
+              <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
+                {timeList.map((time) => (
+                  <TimeOption
+                    key={time}
+                    value={time}
+                    selected={selectedTime === time}
+                    onClick={() => setSelectedTime(time)}
+                  />
+                ))}
+              </div>
+
+              <div className="text-center text-white text-lg mb-6">
+                90 Minutes
+              </div>
+
+              <button
+                className="w-full bg-transparent text-white text-2xl py-3 rounded-3xl border border-white/40 shadow-lg backdrop-blur-sm hover:bg-white/10 transition duration-300 "
+                onClick={handleNext}
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Scrollable Date + Time */}
-      <div className="fixed bottom-2 left-0 right-0 z-20">
-        <div className="w-full bg-transparent rounded-3xl p-4 backdrop-blur-sm ">
-          {/* Date Scroll */}
-          <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
-            {dateList.map((item) => (
-              <DateCard
-                key={item.id}
-                id={item.id}
-                day={item.day}
-                date={item.date}
-                selected={selectedDate === item.id}
-                onClick={() => setSelectedDate(item.id)}
-              />
-            ))}
-          </div>
-
-          {/* Time Scroll */}
-          <div className="flex overflow-x-auto py-2 mb-6 space-x-6 flex-nowrap scroll-hidden">
-            {timeList.map((time) => (
-              <TimeOption
-                key={time}
-                value={time}
-                selected={selectedTime === time}
-                onClick={() => setSelectedTime(time)}
-              />
-            ))}
-          </div>
-
-          <div className="text-center text-gray-200 text-lg mb-6">
-            90 Minutes
-          </div>
-
-          <button
-            className="w-full bg-transparent text-white text-2xl py-3 rounded-3xl border border-white/40 shadow-lg backdrop-blur-sm hover:bg-white/10 transition duration-300 "
-            onClick={handleNext}
-          >
-            Next
-          </button>
+      ) : (
+        <div>
+          layout desktop
         </div>
-      </div>
+      )}
     </div>
   );
 }

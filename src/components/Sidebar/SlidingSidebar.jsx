@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import OfficeItem from "../Office/OfficeItem";
 
-function SlidingSidebar({ isOpen, onClose, children, height = "70%" }) {
+function SlidingSidebar({ isOpen, onClose, children, height = "85%" }) {
+  
   const dragRef = useRef(null);
   const sidebarRef = useRef(null);
   const [dragStartY, setDragStartY] = useState(0);
@@ -43,7 +44,7 @@ function SlidingSidebar({ isOpen, onClose, children, height = "70%" }) {
   return (
     <div 
       ref={sidebarRef}
-      className={`fixed bottom-0 left-0 right-0 bg-gray-900/50 rounded-t-3xl transition-transform duration-300 ease-in-out transform overflow-x-hidden ${
+      className={`fixed bottom-0 left-0 right-0 bg-gray-400/50 backdrop-blur-md rounded-t-3xl transition-transform duration-300 ease-in-out transform overflow-x-hidden ${
         isOpen ? "translate-y-0" : "translate-y-full"
       }`}
       style={{ 

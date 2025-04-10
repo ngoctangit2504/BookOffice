@@ -1,8 +1,15 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CalendarDays, ArrowLeft } from "lucide-react";
+import { Check, Clock } from "lucide-react";
+
+import QRCode from '../../components/QrCode/QRCode';
+
 
 function RoomCard() {
+  const currentUrl = window.location.href;
+  console.log(currentUrl);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,25 +32,35 @@ function RoomCard() {
     navigate(-1);
   };
 
+  const handleClick = () => {
+    navigate('/'); 
+  };
+
   const imageUrl = officeImage || "/api/placeholder/400/300";
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-red-600 py-8 px-4">
+    <div className="w-full min-h-screen bg-gray-600/50 py-8 px-4">
       <div className="flex items-center justify-between mb-16">
         <div className="flex items-center">
-          <button onClick={handleBack} className="mr-2 text-blue-200 font-bold">
+          <button onClick={handleBack} className="mr-2 text-white font-bold">
             <ArrowLeft className="h-6 w-6 " />
+          </button>
+        </div>
+
+        <div className="flex items-center">
+          <button onClick={handleClick} className="text-white font-bold">
+            <Check />
           </button>
         </div>
       </div>
 
-      <div className="text-blue-100 text-sm mb-8 mx-4 justify-center text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-100 to-blue-200">
+      <div className="text-white text-sm mb-8 mx-4 justify-center text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-100 to-blue-200">
         <p>Using HTML CSS (SCSS/Tailwind), and JavaScript</p>
         <p>(React JS if applicable). The task requires</p>
         <p>ensuring responsiveness.</p>
       </div>
 
-      <div className="mx-auto max-w-sm overflow-hidden rounded-2xl bg-gradient-to-br from-blue-400/30 to-red-400/30 backdrop-blur-md border border-white/20 shadow-xl">
+      <div className="mx-auto max-w-sm overflow-hidden rounded-2xl bg-gray-300/15 backdrop-blur-md border border-white/20 shadow-xl">
         <div className="h-96 p-2">
           <div className="w-full h-full overflow-hidden rounded-xl">
             <img
@@ -58,14 +75,14 @@ function RoomCard() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center space-x-4">
-                <p className="bg-gradient-to-r from-red-600 to-transparent bg-clip-text text-transparent text-shadow">Date </p>
-                <p className=" text-shadow font-medium">
+                <p className="text-white ">Date </p>
+                <p className="">
                   {currentMonth} {selectedDate},{currentYear}
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <p className="bg-gradient-to-r from-red-600 to-transparent bg-clip-text text-transparent text-shadow">Seat </p>
-                <p className=" text-shadow font-medium">
+                <p className="text-white">Seat </p>
+                <p className="">
                   {selectedSeats && selectedSeats.length > 0
                     ? selectedSeats.join(", ")
                     : "3,4"}
@@ -75,14 +92,14 @@ function RoomCard() {
 
             <div className="space-y-2 text-left">
               <div className="flex items-center space-x-4">
-                <p className="bg-gradient-to-r from-red-600 to-transparent bg-clip-text text-transparent text-shadow">Point </p>
-                <p className=" text-shadow font-medium">
+                <p className="text-white">Point </p>
+                <p className="">
                   + {totalPoints || 100} point
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <p className="bg-gradient-to-r from-red-600 to-transparent bg-clip-text text-transparent text-shadow">Time </p>
-                <p className=" text-shadow font-medium">
+                <p className="text-white">Time </p>
+                <p className="text-white">
                   {selectedTime || "6 PM"}
                 </p>
               </div>
@@ -98,6 +115,13 @@ function RoomCard() {
             <div className="h-2 w-2 bg-white/50 rounded-full"></div>
           </div>
         </div>
+
+        <div className="text-white">
+          <button className="bg-gray-600/20 p-2 rounded-full flex flex-row">
+            <Clock/> Pending ...
+          </button>
+        </div>
+
     </div>
   );
 }
