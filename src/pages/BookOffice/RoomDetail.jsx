@@ -93,9 +93,9 @@ function RoomDetail() {
     <div>
     {isMobile ? (
     
-    <div className="w-full min-h-screen bg-gray-600 py-8">
+    <div className="w-full min-h-screen bg-[url('https://skepp.com/assets/Uploads/_resampled/ScaleWidthWyIxODAwIl0/IMG-2227.jpg')] backdrop-blur-sm py-8">
       <div className="relative w-full h-[40rem] bg-cover bg-center mb-4 text-white text-center">
-        <div className="absolute inset-0 bg-gray-800/50 z-0 pointer-events-none border-b-4 border-white/15" />
+        <div className="absolute inset-0 bg-gray-800/50 backdrop-blur-sm z-0 pointer-events-none border-b-4 border-white/15" />
 
         <button
           className="absolute top-4 left-4 text-white p-2 rounded-full font-bold flex items-center z-20"
@@ -308,9 +308,9 @@ function RoomDetail() {
       )}
     </div>
     ) : (
-      <div className="flex min-h-screen bg-gray-500">
+      <div className="flex min-h-screen bg-[url('https://skepp.com/assets/Uploads/_resampled/ScaleWidthWyIxODAwIl0/IMG-2227.jpg')] backdrop-blur-sm">
   {/* Left panel with room preview and booking details */}
-  <div className="w-1/3 bg-gray-300/50 p-8 flex flex-col">
+  <div className="w-1/3 bg-gray-300/50 backdrop-blur-sm p-8 flex flex-col">
     <button
       className="text-white mb-6 p-2 flex items-center font-bold w-fit"
       onClick={handleBack}

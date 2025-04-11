@@ -2,11 +2,14 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CalendarDays, ArrowLeft } from "lucide-react";
 import { Check, Clock } from "lucide-react";
+import useWindowSize from "../../hooks/UseWindowSize.js";
 
 import QRCode from '../../components/QrCode/QRCode';
 
 
 function RoomCard() {
+  const windowSize = useWindowSize();
+  const isMobile = windowSize.width < 1024;
   const currentUrl = window.location.href;
   console.log(currentUrl);
 
@@ -39,7 +42,8 @@ function RoomCard() {
   const imageUrl = officeImage || "/api/placeholder/400/300";
 
   return (
-    <div className="w-full min-h-screen bg-gray-600/50 py-8 px-4">
+    <div className="w-full min-h-screen bg-[url('https://skepp.com/assets/Uploads/_resampled/ScaleWidthWyIxODAwIl0/IMG-2227.jpg')] backdrop-blur-sm py-8 px-4">
+     
       <div className="flex items-center justify-between mb-16">
         <div className="flex items-center">
           <button onClick={handleBack} className="mr-2 text-white font-bold">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Building, ArrowLeft, CalendarClock, Check, Clock, X } from "lucide-react";
+import ViewBookingDetail from "./ViewBookingDetail";
 
 const BookedRoomsManager = ({ onBack }) => {
   // Sample data for booked rooms
@@ -34,6 +35,7 @@ const BookedRoomsManager = ({ onBack }) => {
   ]);
 
   const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const filteredRooms = filterStatus === "all" 
     ? bookedRooms 
@@ -57,8 +59,37 @@ const BookedRoomsManager = ({ onBack }) => {
     }
   };
 
+  const handleViewDetails = (booking) => {
+    setSelectedBooking(booking);
+  };
+
+  const handleBackFromDetails = () => {
+    setSelectedBooking(null);
+  };
+
+  const handleCancelBooking = (bookingId) => {
+    setBookedRooms(prevRooms => 
+      prevRooms.map(room => 
+        room.id === bookingId 
+          ? { ...room, status: "cancelled" } 
+          : room
+      )
+    );
+    setSelectedBooking(prev => ({ ...prev, status: "cancelled" }));
+  };
+
+  if (selectedBooking) {
+    return (
+      <ViewBookingDetail 
+        booking={selectedBooking} 
+        onBack={handleBackFromDetails} 
+        onCancel={handleCancelBooking}
+      />
+    );
+  }
+
   return (
-    <div className="bg-gray-600/50 backdrop-blur-md min-h-screen w-full">
+    <div className="bg-[url('https://skepp.com/assets/Uploads/_resampled/ScaleWidthWyIxODAwIl0/IMG-2227.jpg')] backdrop-blur-md min-h-screen w-full">
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-8">
         <div className="flex items-center">
@@ -74,7 +105,7 @@ const BookedRoomsManager = ({ onBack }) => {
 
       {/* Filters */}
       <div className="px-4 mb-6">
-        <div className="flex space-x-2 overflow-x-auto rounded-full bg-gray-300/60 p-1">
+        <div className="flex space-x-2 overflow-x-auto rounded-full bg-gray-300/60 backdrop-blur-md p-1">
           <button 
             className={`rounded-full whitespace-nowrap py-2 px-4 ${filterStatus === 'all' ? 'bg-gray-400 text-white font-medium' : 'text-white'}`}
             onClick={() => setFilterStatus('all')}
@@ -103,14 +134,14 @@ const BookedRoomsManager = ({ onBack }) => {
       </div>
 
       {/* Room List */}
-      <div className="px-4 pb-6">
+      <div className="px-4 pb-6 ">
         {filteredRooms.length === 0 ? (
-          <div className="bg-blue-700/30 rounded-xl p-8 text-center text-white">
+          <div className="bg-gray-600/30 rounded-xl p-8 text-center text-white">
             <p>No rooms found with the selected filter.</p>
           </div>
         ) : (
           filteredRooms.map((room) => (
-            <div key={room.id} className="bg-blue-700/30 backdrop-blur-sm rounded-xl mb-4 overflow-hidden shadow-lg">
+            <div key={room.id} className="bg-gray-600/30 backdrop-blur-sm rounded-xl mb-4 overflow-hidden shadow-lg">
               <div className="relative">
                 <img 
                   src={room.image} 
@@ -138,7 +169,10 @@ const BookedRoomsManager = ({ onBack }) => {
                     <Clock className="w-5 h-5 mr-2" />
                     <span>{room.bookingTime}</span>
                   </div>
-                  <button className="rounded-full bg-white/10 hover:bg-white/20 px-4 py-1 text-white text-sm">
+                  <button 
+                    className="rounded-full bg-white/10 hover:bg-white/20 px-4 py-1 text-white text-sm"
+                    onClick={() => handleViewDetails(room)}
+                  >
                     Details
                   </button>
                 </div>

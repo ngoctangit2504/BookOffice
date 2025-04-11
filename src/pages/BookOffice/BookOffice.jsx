@@ -5,13 +5,15 @@ import SlidingSidebar from "../../components/Sidebar/SlidingSidebar";
 import { useSidebar } from "../../hooks/useSidebar";
 import OfficeItem from "../../components/Office/OfficeItem";
 import { Menu, Building, BanknoteArrowDown, FolderClock, Flag } from "lucide-react";
-import BookedRoomsManager from "../../pages/BookOffice/OfficeManager"; // Import the new component
+import BookedRoomsManager from "../../components/Office/OfficeManager"; // Import the new component
+import RoomBooked from "../../components/Office/RoomBooked";
 
 function BookOffice() {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showBookedRooms, setShowBookedRooms] = useState(false); // Add this state
+  const [showRoomBookeds, setShowRoomBookeds] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Office");
 
   const handleGetLocation = () => {
@@ -47,6 +49,11 @@ function BookOffice() {
     setMenuOpen(false); 
   };
 
+  const handleOpenRoomBooked = () => {
+    setShowRoomBookeds(true);
+    setMenuOpen(false); 
+  };
+
   const handleBackToMain = () => {
     setShowBookedRooms(false);
   };
@@ -63,11 +70,15 @@ function BookOffice() {
     return <BookedRoomsManager onBack={handleBackToMain} />;
   }
 
+  if (showRoomBookeds) {
+    return <RoomBooked onBack={handleBackToMain} />;
+  }
+
   return (
-    <div className="bg-gray-600/30 backdrop-blur-md bg-cover bg-center h-screen w-full overflow-x-hidden">
+    <div className="bg-[url('https://skepp.com/assets/Uploads/_resampled/ScaleWidthWyIxODAwIl0/IMG-2227.jpg')] backdrop-blur-md bg-cover bg-center h-screen w-full overflow-x-hidden">
       {isMobile ? (
         // Layout cho mobile
-        <div className="bg-gray-300/50 min-h-screen w-full overflow-x-hidden relative">
+        <div className="bg-gray-300/30 min-h-screen w-full overflow-x-hidden relative">
           <div className="flex items-center justify-between px-6 py-10">
             <h1 className="text-5xl text-transparent text-white text-shadow">Book</h1>
             <div className="flex items-center justify-center text-white">
@@ -97,7 +108,7 @@ function BookOffice() {
                       onClick={handleOpenBookedRooms}
                     >
                       <Building className="w-6 h-6 mr-2" />
-                      Room Management
+                      Manage Bookings
                     </button>
 
                     <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
@@ -105,7 +116,10 @@ function BookOffice() {
                       Refund
                     </button>
 
-                    <button className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300">
+                    <button 
+                      className="flex items-center text-white text-lg hover:text-blue-300 transition duration-300"
+                      onClick={handleOpenRoomBooked}
+                    >
                       <FolderClock className="w-6 h-6 mr-2" />
                       Room booked
                     </button>
@@ -257,7 +271,7 @@ function BookOffice() {
             </div>
 
             {/* Office items grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
               <OfficeItem />
               <OfficeItem />
               <OfficeItem />
@@ -271,7 +285,7 @@ function BookOffice() {
               <p className="text-2xl py-4 text-white text-shadow">
                 Featured Spaces
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <OfficeItem />
                 <OfficeItem />
               </div>

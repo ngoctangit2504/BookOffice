@@ -1,46 +1,23 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { ArrowBigRightDash, ArrowLeft, Star, Users, Wifi, Printer, Coffee, Clock, Monitor } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { ArrowLeft, Star, Users, Wifi, Printer, Coffee, Clock, Monitor, MessageSquare } from "lucide-react";
 import useWindowSize from "../../hooks/UseWindowSize";
 
-function OfficeDetailView({ officeData }) {
+function ReviewDetail({ booking, onBack }) {
   const windowSize = useWindowSize();
   const isMobile = windowSize.width < 1024;
   
   const [activeTab, setActiveTab] = useState("about");
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
   const videoRef = useRef(null);
 
-  const { id } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const { 
-    officeName, 
-    officeImage, 
-    officeAddress, 
-    officeDescription, 
-    selectedDateObj,
-    selectedTime 
-  } = location.state || {
-    officeName: "",
-    officeImage: "",
-    officeAddress: "",
-    officeDescription: "",
-    selectedDateObj: { day: "Thu", date: "23" }, // Giá trị mặc định
-    selectedTime: "3 PM" // Giá trị mặc định
-  };
-
-    const handleBack = () => {
-        navigate(-1);
-      };
-  
-  // Sample office data with expanded information
-  const office = officeData || {
-    id: "1",
-    name: "Creative Studio Workspace",
-    address: "123 Innovation Street, Tech District",
+  // Sample office data with expanded information based on the booking
+  const office = {
+    id: booking.id,
+    name: booking.name,
+    address: booking.location,
     description: "A modern workspace designed for creative professionals and tech entrepreneurs.",
-    image: "https://maisonoffice.vn/en/wp-content/uploads/2024/07/0-toa-nha-moi-tai-hcm.jpg",
+    image: booking.image,
     video360Url: "https://example.com/office-360-video.mp4",
     rating: 4.8,
     reviewCount: 124,
@@ -68,7 +45,10 @@ function OfficeDetailView({ officeData }) {
       "https://assets.executivecentre.com/assets/PrivateOffice-VN-OfficeComboPromo.jpg",
       "https://officesnapshots.com/wp-content/uploads/2022/04/savills-offices-ho-chi-minh-city.jpg",
       "https://officesnapshots.com/wp-content/uploads/2023/04/agoda-offices-ho-chi-minh-city-1200x674.jpg",
-    ]
+    ],
+    bookingTime: booking.bookingTime,
+    date: booking.date,
+    status: booking.status
   };
 
   const handlePlay360Video = () => {
@@ -86,20 +66,23 @@ function OfficeDetailView({ officeData }) {
     ));
   };
 
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
 
-  const handleBookOffice = () => {    
-    navigate(`/office/${id}/confirm`, {
-      state: {
-        officeId: id,
-        officeName: office.name,
-        officeImage: office.image,
-        officeAddress: office.address,
-        officeDescription: office.description,
-        selectedDay: selectedDateObj?.day,
-        selectedDate: selectedDateObj?.date,
-        selectedTime: selectedTime,
-      },
-    });
+  const handleSubmitReview = () => {
+    // Here you would typically send the review to your backend
+    console.log("Submitting review:", { rating, reviewText });
+    
+    // Show success message or redirect
+    alert("Review submitted successfully!");
+    
+    // Reset form
+    setRating(0);
+    setReviewText("");
+    
+    // Go back
+    onBack();
   };
 
   return (
@@ -114,7 +97,7 @@ function OfficeDetailView({ officeData }) {
             <div className="absolute inset-0 bg-black/30"></div>
             
             <button
-              onClick={handleBack}
+              onClick={onBack}
               className="absolute top-4 left-4 text-white p-2 rounded-full font-bold flex items-center z-10"
             >
               <ArrowLeft className="w-6 h-6" />
@@ -134,6 +117,26 @@ function OfficeDetailView({ officeData }) {
                   <span className="ml-1 text-white font-bold">{office.rating}</span>
                 </div>
                 <p className="text-xs text-white/70">{office.reviewCount} reviews</p>
+              </div>
+            </div>
+
+            {/* Booking details */}
+            <div className="mb-6 p-3 bg-white/10 rounded-lg">
+              <h2 className="text-lg font-bold text-white mb-2">Booking Details</h2>
+              <div className="flex justify-between items-center text-white/80 mb-1">
+                <span>Date:</span>
+                <span className="font-medium">{office.date}</span>
+              </div>
+              <div className="flex justify-between items-center text-white/80 mb-1">
+                <span>Time:</span>
+                <span className="font-medium">{office.bookingTime}</span>
+              </div>
+              <div className="flex justify-between items-center text-white/80">
+                <span>Status:</span>
+                <span className={`font-medium capitalize px-2 py-1 rounded-full ${
+                  office.status === "using" ? "bg-green-500/20" : 
+                  office.status === "completed" ? "bg-yellow-500/20" : "bg-gray-500/20"
+                }`}>{office.status}</span>
               </div>
             </div>
 
@@ -265,13 +268,63 @@ function OfficeDetailView({ officeData }) {
           {/* Bottom Action Button */}
           <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-700/80 backdrop-blur-sm">
             <button
-              onClick={handleBookOffice}
-              className="w-full bg-red-500/80 text-white py-3 rounded-full flex items-center justify-center font-medium"
+              onClick={() => setActiveTab('add-review')}
+              className="w-full bg-blue-500/80 text-white py-3 rounded-full flex items-center justify-center font-medium"
             >
-              <ArrowBigRightDash className="mr-2" />
-              Book This Office
+              <MessageSquare className="mr-2" />
+              Add a Review
             </button>
           </div>
+
+          {/* Add Review Modal */}
+          {activeTab === 'add-review' && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+              <div className="bg-gray-800 w-full max-w-md rounded-xl p-6">
+                <h2 className="text-xl font-bold text-white mb-4">Add Your Review</h2>
+                
+                <div className="mb-6">
+                  <label className="block text-white mb-2">Your Rating</label>
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star 
+                        key={star}
+                        className={`w-8 h-8 cursor-pointer ${
+                          star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-400"
+                        }`}
+                        onClick={() => handleRatingChange(star)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block text-white mb-2">Your Review</label>
+                  <textarea
+                    className="w-full h-32 bg-gray-700 text-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Share your experience..."
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                  />
+                </div>
+                
+                <div className="flex space-x-3">
+                  <button 
+                    className="flex-1 bg-gray-600 text-white py-3 rounded-lg"
+                    onClick={() => setActiveTab('reviews')}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="flex-1 bg-blue-500 text-white py-3 rounded-lg disabled:opacity-50"
+                    disabled={rating === 0 || !reviewText.trim()}
+                    onClick={handleSubmitReview}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         // Desktop view
@@ -279,7 +332,7 @@ function OfficeDetailView({ officeData }) {
           {/* Left panel with image and details */}
           <div className="w-1/2 p-8">
             <button
-              onClick={handleBack}
+              onClick={onBack}
               className="text-white p-2 mb-4 rounded-full font-bold flex items-center"
             >
               <ArrowLeft className="w-6 h-6 mr-2" />
@@ -307,6 +360,26 @@ function OfficeDetailView({ officeData }) {
             </div>
             
             <p className="text-white/80 mb-6">{office.address}</p>
+
+            {/* Booking details */}
+            <div className="mb-6 p-4 bg-white/10 rounded-lg">
+              <h2 className="text-xl font-bold text-white mb-3">Booking Details</h2>
+              <div className="flex justify-between items-center text-white/80 mb-2">
+                <span>Date:</span>
+                <span className="font-medium">{office.date}</span>
+              </div>
+              <div className="flex justify-between items-center text-white/80 mb-2">
+                <span>Time:</span>
+                <span className="font-medium">{office.bookingTime}</span>
+              </div>
+              <div className="flex justify-between items-center text-white/80">
+                <span>Status:</span>
+                <span className={`font-medium capitalize px-3 py-1 rounded-full ${
+                  office.status === "using" ? "bg-green-500/20" : 
+                  office.status === "completed" ? "bg-yellow-500/20" : "bg-gray-500/20"
+                }`}>{office.status}</span>
+              </div>
+            </div>
             
             <div className="mb-8">
               <h2 className="text-xl font-bold text-white mb-4">About This Space</h2>
@@ -443,12 +516,60 @@ function OfficeDetailView({ officeData }) {
               </div>
             )}
             
+            {activeTab === 'add-review' && (
+              <div className="p-4 bg-gray-800 rounded-xl">
+                <h2 className="text-xl font-bold text-white mb-6">Add Your Review</h2>
+                
+                <div className="mb-6">
+                  <label className="block text-white mb-2">Your Rating</label>
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star 
+                        key={star}
+                        className={`w-8 h-8 cursor-pointer ${
+                          star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-400"
+                        }`}
+                        onClick={() => handleRatingChange(star)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block text-white mb-2">Your Review</label>
+                  <textarea
+                    className="w-full h-32 bg-gray-700 text-white rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Share your experience..."
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                  />
+                </div>
+                
+                <div className="flex space-x-3">
+                  <button 
+                    className="flex-1 bg-gray-600 text-white py-3 rounded-lg"
+                    onClick={() => setActiveTab('reviews')}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="flex-1 bg-blue-500 text-white py-3 rounded-lg disabled:opacity-50"
+                    disabled={rating === 0 || !reviewText.trim()}
+                    onClick={handleSubmitReview}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            )}
+            
             <div className="mt-8 pt-6 border-t border-white/20">
               <button 
-                className="w-full bg-red-500/80 text-white py-4 rounded-xl flex items-center justify-center font-medium text-lg"
+                onClick={() => setActiveTab('add-review')}
+                className="w-full bg-blue-500/80 text-white py-4 rounded-xl flex items-center justify-center font-medium text-lg"
               >
-                <ArrowBigRightDash className="mr-2" />
-                Book This Office
+                <MessageSquare className="mr-2" />
+                Add a Review
               </button>
             </div>
           </div>
@@ -458,4 +579,4 @@ function OfficeDetailView({ officeData }) {
   );
 }
 
-export default OfficeDetailView;
+export default ReviewDetail;
