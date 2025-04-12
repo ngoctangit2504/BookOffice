@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import useWindowSize from "../../hooks/UseWindowSize";
 import { ArrowBigRightDash } from "lucide-react";
+import { getRoomContract } from "../../utils/contractRoom.js";
 
 function OfficeDetail() {
   const windowSize = useWindowSize();
@@ -12,15 +13,45 @@ function OfficeDetail() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const [roomData, setRoomData] = useState(null);
+  const [contractRoom, setContractRoom] = useState(null);
 
-  // Get office data from location.state, with defaults
-  const { officeImage, officeName, officeAddress, officeDescription } =
-    location.state || {
-      officeImage: "",
-      officeName: "",
-      officeAddress: "",
-      officeDescription: "",
+  // Get room data from location.state (from OfficeItem)
+  const { 
+    roomId, 
+    name, 
+    location: roomLocation, 
+    roomType, 
+    roomLength, 
+    pricePerHour, 
+    isAvailable,
+    imageUrl 
+  } = location.state || {};
+
+  
+  useEffect(() => {
+    const loadContract = async () => {
+      const contract = await getRoomContract();
+      setContractRoom(contract);
     };
+
+    loadContract();
+  }, []);
+
+  useEffect(() => {
+    if (!contractRoom || !id) return;
+
+    const fetchRoomData = async () => {
+      try {
+        const data = await contractRoom.getRoomById(id);
+        setRoomData(data);
+      } catch (error) {
+        console.error("Failed to fetch room data:", error);
+      }
+    };
+
+    fetchRoomData();
+  }, [contractRoom, id]);
 
   const handleBack = () => {
     navigate(-1);
@@ -67,14 +98,17 @@ function OfficeDetail() {
 
     navigate(`/office/${id}/confirm`, {
       state: {
-        officeId: id,
-        officeName,
-        officeImage,
-        officeAddress,
-        officeDescription,
+        roomId,
+        name,
+        roomLocation,
+        roomType,
+        roomLength,
+        pricePerHour,
+        isAvailable,
+        imageUrl,
         selectedDay: selectedDateObj?.day,
         selectedDate: selectedDateObj?.date,
-        selectedTime: selectedTime,
+        selectedTime,
       },
     });
   };
@@ -115,14 +149,17 @@ function OfficeDetail() {
   const handleViewOfficeDetail = () => {
     navigate(`/office/${id}/detail`, {
       state: {
-        officeId: id,
-        officeName,
-        officeImage,
-        officeAddress,
-        officeDescription,
+        roomId,
+        name,
+        roomLocation,
+        roomType,
+        roomLength,
+        pricePerHour,
+        isAvailable,
+        imageUrl,
         selectedDateObj: dateList.find((item) => item.id === selectedDate),
-        selectedTime: selectedTime,
-      }
+        selectedTime,
+      },
     });
   };
 
@@ -131,7 +168,7 @@ function OfficeDetail() {
     <div className="w-full min-h-screen bg-[url('https://skepp.com/assets/Uploads/_resampled/ScaleWidthWyIxODAwIl0/IMG-2227.jpg')] backdrop-blur-md py-8">
       <div
         className="relative w-full h-[40rem] bg-cover bg-center mb-4 flex items-center justify-center text-white text-center"
-        style={{ backgroundImage: `url(${officeImage})` }}
+        style={{ backgroundImage: `url(${imageUrl})` }}
       >
         <div className="absolute inset-0 bg-gray-300/15"></div>
 
@@ -156,13 +193,13 @@ function OfficeDetail() {
         </button>
 
         <div className="relative z-10 p-6 rounded-xl max-w-xl">
-          <h2 className="text-3xl font-bold mb-2">{officeName}</h2>
-          <p className="text-white mb-2 pb-6">{officeAddress}</p>
-          <p className="text-white">{officeDescription}</p>
+          <h2 className="text-3xl font-bold bg-gray-100/10 backdrop-blur-md rounded-full mb-2 p-4">{name || "Office"}</h2>
+          <p className="text-white bg-gray-100/10 backdrop-blur-md rounded-full mb-2 p-2">{roomLocation || "No location available"}</p>
+          <p className="text-white bg-gray-100/10 backdrop-blur-md rounded-full p-2">{roomType || "Office Space"}</p>
 
           <button 
             onClick={handleViewOfficeDetail}
-            className="mt-8 flex flex-row items-center mx-auto border-full rounded-full p-2 shadow-[0_4px_10px_rgba(255,255,255,0.5)] hover:bg-gray-600/50"
+            className="mt-8 flex flex-row items-center mx-auto bg-gray-600 backdrop-blur-md border-full rounded-full p-2 shadow-[0_4px_10px_rgba(255,255,255,0.5)] hover:bg-gray-600/50"
           >
             <ArrowBigRightDash className="mr-2"/>
             View Office
@@ -221,7 +258,7 @@ function OfficeDetail() {
       <div className="w-7/12 relative">
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${officeImage})` }}
+          style={{ backgroundImage: `url(${imageUrl})` }}
         >
           <div className="absolute inset-0 bg-black/30"></div>
           
@@ -247,9 +284,11 @@ function OfficeDetail() {
           </button>
           
           <div className="absolute bottom-12 left-12 right-12 text-white z-10">
-            <h1 className="text-5xl font-bold mb-4">{officeName}</h1>
-            <p className="text-xl mb-3">{officeAddress}</p>
-            <p className="text-lg mb-8 max-w-xl">{officeDescription}</p>
+            <h1 className="text-5xl font-bold mb-4">{name || "Office"}</h1>
+            <p className="text-xl mb-3">{roomLocation || "No location available"}</p>
+            <p className="text-lg mb-8 max-w-xl">
+              {roomType || "Office Space"} • {roomLength || "N/A"} sq.ft • ${pricePerHour || "N/A"}/hr
+            </p>
             
             <button 
               onClick={handleViewOfficeDetail}

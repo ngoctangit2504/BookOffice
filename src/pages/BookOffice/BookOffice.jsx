@@ -7,6 +7,7 @@ import OfficeItem from "../../components/Office/OfficeItem";
 import { Menu, Building, BanknoteArrowDown, FolderClock, Flag } from "lucide-react";
 import BookedRoomsManager from "../../components/Office/OfficeManager"; // Import the new component
 import RoomBooked from "../../components/Office/RoomBooked";
+import OfficeList from "../../components/Office/OfficeList";
 
 function BookOffice() {
   const [location, setLocation] = useState(null);
@@ -151,8 +152,7 @@ function BookOffice() {
           </div>
 
           <div className="mx-2">
-            <OfficeItem/>
-            <OfficeItem/>
+            <OfficeList/>
           </div>
 
           <div>
@@ -271,13 +271,8 @@ function BookOffice() {
             </div>
 
             {/* Office items grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
-              <OfficeItem />
-              <OfficeItem />
-              <OfficeItem />
-              <OfficeItem />
-              <OfficeItem />
-              <OfficeItem />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+              <OfficeList/>
             </div>
 
             {/* Featured section */}

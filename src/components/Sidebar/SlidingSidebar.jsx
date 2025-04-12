@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import OfficeItem from "../Office/OfficeItem";
+import OfficeList from "../Office/OfficeList";
 
 function SlidingSidebar({ isOpen, onClose, children, height = "85%" }) {
   
@@ -89,8 +90,7 @@ function SlidingSidebar({ isOpen, onClose, children, height = "85%" }) {
         <div className="flex-1 overflow-y-auto overflow-x-hidden w-full">
           {children}
           <div className="w-full">
-            <OfficeItem/>
-            <OfficeItem/>
+            <OfficeList/>
           </div>
         </div>
       </div>
